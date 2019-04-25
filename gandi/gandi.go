@@ -6,8 +6,7 @@ import (
 	"errors"
 
 	"github.com/mholt/caddy/caddytls"
-	"github.com/xenolf/lego/acme"
-	"github.com/xenolf/lego/providers/dns/gandi"
+	"github.com/go-acme/lego/providers/dns/gandi"
 )
 
 func init() {
@@ -19,12 +18,14 @@ func init() {
 //
 // len(0): use credentials from environment
 // len(1): credentials[0] = API key
-func NewDNSProvider(credentials ...string) (acme.ChallengeProvider, error) {
+func NewDNSProvider(credentials ...string) (caddytls.ChallengeProvider, error) {
 	switch len(credentials) {
 	case 0:
 		return gandi.NewDNSProvider()
 	case 1:
-		return gandi.NewDNSProviderCredentials(credentials[0])
+		config := gandi.NewDefaultConfig()
+		config.APIKey = credentials[0]
+		return gandi.NewDNSProviderConfig(config)
 	default:
 		return nil, errors.New("invalid credentials length")
 	}

@@ -6,8 +6,7 @@ import (
 	"errors"
 
 	"github.com/mholt/caddy/caddytls"
-	"github.com/xenolf/lego/acme"
-	"github.com/xenolf/lego/providers/dns/cloudflare"
+	"github.com/go-acme/lego/providers/dns/cloudflare"
 )
 
 func init() {
@@ -20,12 +19,15 @@ func init() {
 // len(0): use credentials from environment
 // len(2): credentials[0] = Email address
 //         credentials[1] = API key
-func NewDNSProvider(credentials ...string) (acme.ChallengeProvider, error) {
+func NewDNSProvider(credentials ...string) (caddytls.ChallengeProvider, error) {
 	switch len(credentials) {
 	case 0:
 		return cloudflare.NewDNSProvider()
 	case 2:
-		return cloudflare.NewDNSProviderCredentials(credentials[0], credentials[1])
+		config := cloudflare.NewDefaultConfig()
+		config.AuthEmail = credentials[0]
+		config.AuthKey = credentials[1]
+		return cloudflare.NewDNSProviderConfig(config)
 	default:
 		return nil, errors.New("invalid credentials length")
 	}

@@ -1,19 +1,17 @@
-// Package vultr adapts the lego Vultr DNS provider
-// for Caddy. Importing this package plugs it in.
-package vultr
+package ns1
 
 import (
 	"errors"
 
 	"github.com/mholt/caddy/caddytls"
-	"github.com/go-acme/lego/providers/dns/vultr"
+	"github.com/go-acme/lego/providers/dns/ns1"
 )
 
 func init() {
-	caddytls.RegisterDNSProvider("vultr", NewDNSProvider)
+	caddytls.RegisterDNSProvider("ns1", NewDNSProvider)
 }
 
-// NewDNSProvider returns a new Vultr DNS challenge provider.
+// NewDNSProvider returns a new ns1.DNSProvider DNS challenge provider.
 // The credentials are interpreted as follows:
 //
 // len(0): use credentials from environment
@@ -21,11 +19,11 @@ func init() {
 func NewDNSProvider(credentials ...string) (caddytls.ChallengeProvider, error) {
 	switch len(credentials) {
 	case 0:
-		return vultr.NewDNSProvider()
+		return ns1.NewDNSProvider()
 	case 1:
-		config := vultr.NewDefaultConfig()
+		config := ns1.NewDefaultConfig()
 		config.APIKey = credentials[0]
-		return vultr.NewDNSProviderConfig(config)
+		return ns1.NewDNSProviderConfig(config)
 	default:
 		return nil, errors.New("invalid credentials length")
 	}

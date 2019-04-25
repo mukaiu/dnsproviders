@@ -1,19 +1,19 @@
-// Package digitalocean adapts the lego DigitalOcean DNS
+// Package dnspod adapts the lego Dnspod DNS
 // provider for Caddy. Importing this package plugs it in.
-package digitalocean
+package dnspod
 
 import (
 	"errors"
 
 	"github.com/mholt/caddy/caddytls"
-	"github.com/go-acme/lego/providers/dns/digitalocean"
+	"github.com/go-acme/lego/providers/dns/dnspod"
 )
 
 func init() {
-	caddytls.RegisterDNSProvider("digitalocean", NewDNSProvider)
+	caddytls.RegisterDNSProvider("dnspod", NewDNSProvider)
 }
 
-// NewDNSProvider returns a new DigitalOcean DNS challenge provider.
+// NewDNSProvider returns a new dnspod DNS challenge provider.
 // The credentials are interpreted as follows:
 //
 // len(0): use credentials from environment
@@ -21,11 +21,11 @@ func init() {
 func NewDNSProvider(credentials ...string) (caddytls.ChallengeProvider, error) {
 	switch len(credentials) {
 	case 0:
-		return digitalocean.NewDNSProvider()
+		return dnspod.NewDNSProvider()
 	case 1:
-		config := digitalocean.NewDefaultConfig()
-		config.AuthToken = credentials[0]
-		return digitalocean.NewDNSProviderConfig(config)
+		config := dnspod.NewDefaultConfig()
+		config.LoginToken = credentials[0]
+		return dnspod.NewDNSProviderConfig(config)
 	default:
 		return nil, errors.New("invalid credentials length")
 	}
